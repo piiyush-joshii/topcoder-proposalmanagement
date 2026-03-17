@@ -1,0 +1,22 @@
+# dependencies
+node_modules/
+proposal-management/node_modules/
+proposal-management/server/node_modules/
+
+# env
+.env
+.env.local
+proposal-management/.env
+proposal-management/server/.env
+
+# build
+dist/
+proposal-management/dist/
+
+# editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
