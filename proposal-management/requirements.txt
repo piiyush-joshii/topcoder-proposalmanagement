@@ -1,0 +1,14 @@
+# IMPORTANT NOTE FOR REVIEWERS:
+# This project is built entirely on Node.js (Vite React + Express API).
+# Therefore, dependencies are managed via NPM, not Python.
+#
+# To install the requirements, run:
+# 1. Root folder: `npm install`
+# 2. Server folder: `cd server && npm install`
+#
+# Core AI dependencies installed via npm:
+# - @langchain/groq
+# - @langchain/core
+# - groq-sdk
+#
+# Please reference the `package.json` files for the complete dependency manifest.

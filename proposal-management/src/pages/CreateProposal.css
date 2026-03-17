@@ -1,0 +1,119 @@
+/* ---- Create Proposal Page ---- */
+.create-proposal {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-3xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.create-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.create-header h1 {
+  font-size: 1.5rem;
+}
+
+.create-body {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.step-intro h2 {
+  font-size: 1.4rem;
+  margin-bottom: var(--space-xs);
+}
+
+.step-intro p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* Generate section */
+.generate-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-lg);
+  padding: var(--space-3xl) var(--space-xl);
+}
+
+.generate-icon-wrapper {
+  position: relative;
+}
+
+.generate-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(6, 182, 212, 0.2));
+  color: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.generate-icon::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: var(--radius-xl);
+  border: 2px dashed var(--border-default);
+  animation: spin 20s linear infinite;
+}
+
+.generate-desc {
+  color: var(--text-secondary);
+  max-width: 400px;
+  font-size: 0.95rem;
+}
+
+.generating-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.generating-indicator p {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.generating-sub {
+  font-size: 0.8rem !important;
+  color: var(--text-tertiary) !important;
+  font-weight: 400 !important;
+}

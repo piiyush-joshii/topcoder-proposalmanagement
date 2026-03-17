@@ -1,0 +1,18 @@
+Challenge Overview
+This challenge integrates the frontend UI (from the UI Prototype challenge) with the backend API (from the Backend Development challenge) to deliver the complete, end-to-end "Proposal Management" feature. The frontend lives in the platform-ui project's rfp-tool module; the backend is a standalone NestJS API. This challenge connects the two, allowing users to create proposals, upload context documents, submit an RFP summary, answer AI-generated clarifying questions, and view a generated PDF proposal — all connected to live backend services.
+
+This challenge assumes the UI Prototype and Backend Development challenges have been completed. The primary work involves replacing mock service functions with real API calls, wiring up server-driven state, and ensuring the full workflow operates correctly end-to-end.
+
+Registration Requirements
+To register for this challenge, you must sign a Non-Disclosure Agreement (NDA).
+
+All specifications, data, designs, and materials related to this challenge are protected by intellectual property rights. After completing the NDA registration process, you will gain access to the detailed private specification document that contains:
+
+API service integration specifications and error handling requirements
+Server-side timer synchronization logic
+File upload integration with progress tracking
+PDF display and download implementation
+End-to-end workflow verification steps
+Edge case handling and error recovery flows
+Comprehensive testing and submission guidelines
+The private specification is required to complete this challenge successfully.
