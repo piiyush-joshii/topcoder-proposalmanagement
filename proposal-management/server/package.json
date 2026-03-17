@@ -2,13 +2,11 @@
   "name": "server",
   "version": "1.0.0",
   "description": "Proposal Management API with LangChain + Groq",
-  "type": "module",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
     "start": "ts-node src/main.ts",
-    "nest:dev": "ts-node-dev --respawn src/main.ts",
-    "start": "node index.js",
-    "dev": "node --watch index.js"
+    "nest:dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "dev:old": "node --watch index.old.js"
   },
   "keywords": [],
   "author": "",
