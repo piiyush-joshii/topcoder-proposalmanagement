@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ChatGroq } from '@langchain/groq';
 import { ChatPromptTemplate } from '@langchain/core/prompts';
 import { JsonOutputParser } from '@langchain/core/output_parsers';
+import { Proposal, Question } from './types';
 import {
   getIndustryGuidance,
   QUESTION_SYSTEM_PROMPT,
@@ -15,7 +16,7 @@ import {
 export class ProposalsService {
   private readonly logger = new Logger(ProposalsService.name);
   private groqModel: ChatGroq;
-  private proposals: any[] = []; // Temporary in-memory storage for the challenge demo
+  private proposals: Proposal[] = []; // Temporary in-memory storage for the challenge demo
 
   constructor(private configService: ConfigService) {
     const apiKey = this.configService.get<string>('groqApiKey');
@@ -26,23 +27,26 @@ export class ProposalsService {
     });
   }
 
-  async findAll() {
+  async findAll(): Promise<Proposal[]> {
     return this.proposals;
   }
 
-  async create(data: any) {
-    const proposal = {
+  async create(data: Partial<Proposal>): Promise<Proposal> {
+    const proposal: Proposal = {
       id: Date.now().toString(),
-      ...data,
-      status: 'draft',
+      title: data.title || 'Untitled',
+      clientName: data.clientName || 'Unknown',
+      industry: data.industry || 'Other',
+      status: data.status || ( 'draft' as any ),
       createdAt: new Date(),
+      ...data,
     };
     this.proposals.push(proposal);
     return proposal;
   }
 
-  async assess(id: string, rfpSummary: string) {
-    const proposal = this.proposals.find(p => p.id === id) as any;
+  async assess(id: string, rfpSummary: string): Promise<{ questions: Question[]; timerStartedAt: Date }> {
+    const proposal = this.proposals.find(p => p.id === id);
     if (!proposal) throw new Error('Proposal not found');
 
     const industryGuidance = getIndustryGuidance(proposal.industry);
@@ -60,9 +64,9 @@ export class ProposalsService {
         industry: proposal.industry,
         industryGuidance,
         documentContext: '',
-      }) as any;
+      }) as { questions: Question[] };
 
-      proposal.status = 'assessed';
+      proposal.status = 'assessed' as any;
       proposal.rfpSummary = rfpSummary;
       proposal.timerStartedAt = new Date();
       proposal.questions = result.questions;
@@ -71,21 +75,23 @@ export class ProposalsService {
         questions: result.questions,
         timerStartedAt: proposal.timerStartedAt
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(`Gemini/Groq failure: ${error.message}`);
       if (error.message.includes('timeout')) throw new GatewayTimeoutException();
       throw new BadGatewayException('Failed to connect to AI service');
     }
   }
 
-  async answer(id: string, answers: any) {
-    const proposal = this.proposals.find(p => p.id === id) as any;
+  async answer(id: string, answers: Record<string, string>): Promise<any> {
+    const proposal = this.proposals.find(p => p.id === id);
     if (!proposal) throw new Error('Proposal not found');
 
     // Check timer (15 mins)
-    const elapsed = Date.now() - new Date(proposal.timerStartedAt).getTime();
-    if (elapsed > 15 * 60 * 1000) {
-      throw new BadGatewayException('Session expired. Please re-assess.');
+    if (proposal.timerStartedAt) {
+      const elapsed = Date.now() - new Date(proposal.timerStartedAt).getTime();
+      if (elapsed > 15 * 60 * 1000) {
+        throw new BadGatewayException('Session expired. Please re-assess.');
+      }
     }
 
     const proposalPrompt = ChatPromptTemplate.fromMessages([
@@ -102,7 +108,7 @@ export class ProposalsService {
       qaContext: JSON.stringify(answers),
     }) as any;
 
-    proposal.status = 'completed';
+    proposal.status = 'completed' as any;
     proposal.answers = answers;
     proposal.generatedContent = result;
     
