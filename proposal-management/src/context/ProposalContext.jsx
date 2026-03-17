@@ -103,26 +103,26 @@ export function ProposalProvider({ children }) {
     }
   }, []);
 
+  // RFP Summary is now handled inside generateQuestions for the Topcoder workflow
   const submitRfpSummary = useCallback(async (proposalId, summary) => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-    try {
-      const res = await api.submitRfpSummary(proposalId, summary);
-      if (res.success) dispatch({ type: 'SET_CURRENT', payload: res.data });
-      else dispatch({ type: 'SET_ERROR', payload: res.error });
-      return res;
-    } catch (e) {
-      dispatch({ type: 'SET_ERROR', payload: e.message });
-      return { success: false };
-    }
+    // Local state update before AI call
+    dispatch({ type: 'UPDATE_CURRENT', payload: { rfpSummary: summary } });
+    return { success: true };
   }, []);
 
-  const generateQuestions = useCallback(async (proposalId) => {
+  const generateQuestions = useCallback(async (proposalId, rfpSummary) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
-      const res = await api.generateQuestions(proposalId);
+      const res = await api.generateQuestions(proposalId, rfpSummary);
       if (res.success) {
-        const pRes = await api.getProposalById(proposalId);
-        if (pRes.success) dispatch({ type: 'SET_CURRENT', payload: pRes.data });
+        dispatch({
+          type: 'UPDATE_CURRENT',
+          payload: {
+            questions: res.data,
+            timerStartedAt: res.timerStartedAt,
+            status: 'assessed'
+          }
+        });
         return res;
       }
       dispatch({ type: 'SET_ERROR', payload: res.error });
@@ -134,24 +134,20 @@ export function ProposalProvider({ children }) {
   }, []);
 
   const submitAnswers = useCallback(async (proposalId, answers) => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-    try {
-      const res = await api.submitAnswers(proposalId, answers);
-      if (res.success) dispatch({ type: 'SET_CURRENT', payload: res.data });
-      else dispatch({ type: 'SET_ERROR', payload: res.error });
-      return res;
-    } catch (e) {
-      dispatch({ type: 'SET_ERROR', payload: e.message });
-      return { success: false };
-    }
+    // Local state update before PDF generation
+    dispatch({ type: 'UPDATE_CURRENT', payload: { answers } });
+    return { success: true };
   }, []);
 
-  const generatePdf = useCallback(async (proposalId) => {
+  const generatePdf = useCallback(async (proposalId, answers) => {
     dispatch({ type: 'SET_LOADING', payload: true });
     try {
-      const res = await api.generateProposalPdf(proposalId);
-      if (res.success) dispatch({ type: 'SET_CURRENT', payload: res.data });
-      else dispatch({ type: 'SET_ERROR', payload: res.error });
+      const res = await api.generateProposalPdf(proposalId, answers);
+      if (res.success) {
+        dispatch({ type: 'SET_CURRENT', payload: res.data });
+      } else {
+        dispatch({ type: 'SET_ERROR', payload: res.error });
+      }
       return res;
     } catch (e) {
       dispatch({ type: 'SET_ERROR', payload: e.message });

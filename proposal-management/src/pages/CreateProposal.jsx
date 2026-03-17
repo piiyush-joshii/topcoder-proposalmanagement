@@ -94,7 +94,7 @@ export default function CreateProposal() {
     const res = await submitRfpSummary(currentProposal.id, rfpSummary);
     if (res.success) {
       setGenerating(true);
-      const qRes = await generateQuestions(currentProposal.id);
+      const qRes = await generateQuestions(currentProposal.id, rfpSummary);
       setGenerating(false);
       if (qRes.success) setStep(3);
     }
@@ -111,7 +111,7 @@ export default function CreateProposal() {
   const handleGeneratePdf = async () => {
     if (!currentProposal) return;
     setGeneratingPdf(true);
-    await generatePdf(currentProposal.id);
+    await generatePdf(currentProposal.id, currentProposal.answers);
     setGeneratingPdf(false);
   };
 
